@@ -1,0 +1,24 @@
+DAILY CUSTOMER FEEDBACK REPORT
+----------*****----------
+
+Sentiment Summary:
+- Positive: 3
+- Negative: 3
+
+Most Common Complaint Category:
+- Service Issue
+
+Top Customer Complaints:
+- CUST102: 1 complaints
+- CUST103: 1 complaints
+- CUST104: 1 complaints
+
+Sample Negative Feedback:
+- Very poor support experience
+- App is crashing again and again
+- Billing amount charged twice
+
+System Suggestions:
+- Review delivery timelines and logistics performance.
+- Audit billing system for duplicate or incorrect charges.
+- Investigate application stability and bug reports.
