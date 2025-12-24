@@ -1,14 +1,19 @@
-from modules.reader import read_feedback_today, read_chat_logs
+from modules.reader import (
+    read_feedback_today,
+    read_chat_logs,
+    read_email_feedback
+)
 
 if __name__ == "__main__":
     print("System started...\n")
 
-    print("Reading feedback_today.txt")
-    today_feedback = read_feedback_today()
-    for item in today_feedback:
-        print(item)
+    all_feedback = []
 
-    print("\nReading chat_logs.txt")
-    chat_feedback = read_chat_logs()
-    for item in chat_feedback:
-        print(item)
+    all_feedback.extend(read_feedback_today())
+    all_feedback.extend(read_chat_logs())
+    all_feedback.extend(read_email_feedback())
+
+    print(f"Total feedback records: {len(all_feedback)}\n")
+
+    for feedback in all_feedback:
+        print(feedback)
