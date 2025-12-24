@@ -1,39 +1,47 @@
-from modules.reader import (
-    read_feedback_today,
-    read_chat_logs,
-    read_email_feedback
+import logging
+import os
+from collections import defaultdict
+
+
+# make sure logs directory exists
+LOG_DIR = "logs"
+LOG_FILE = os.path.join(LOG_DIR, "negative_alerts.log")
+
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+
+logging.basicConfig(
+    filename=LOG_FILE,
+    level=logging.INFO,
+    format="%(asctime)s | %(message)s"
 )
-from modules.sentiment import analyze_sentiment
-from modules.categorizer import categorize_feedback
-from modules.alerts import process_negative_feedback
 
-if __name__ == "__main__":
-    print("System started...\n")
 
-    all_feedback = []
-    all_feedback.extend(read_feedback_today())
-    all_feedback.extend(read_chat_logs())
-    all_feedback.extend(read_email_feedback())
+customer_negative_count = defaultdict(int)
 
-    print("Processing feedback with alerts:\n")
 
-    for feedback in all_feedback:
-        score, sentiment = analyze_sentiment(feedback["message"])
-        category = categorize_feedback(feedback["message"])
+def process_negative_feedback(feedback):
+    """
+    Logs negative feedback.
+    Marks repeat complaints from same customer as URGENT.
+    """
 
-        feedback["sentiment_score"] = score
-        feedback["sentiment_type"] = sentiment
-        feedback["category"] = category
+    customer_id = feedback["customer_id"]
+    message = feedback["message"]
+    category = feedback["category"]
 
-        if sentiment == "Negative":
-            urgency = process_negative_feedback(feedback)
-            print(
-                f"ALERT | {urgency} | "
-                f"{feedback['customer_id']} | "
-                f"{category}"
-            )
-        else:
-            print(
-                f"OK | {feedback['customer_id']} | "
-                f"{sentiment}"
-            )
+    customer_negative_count[customer_id] += 1
+
+    urgency = "URGENT" if customer_negative_count[customer_id] > 1 else "NORMAL"
+
+    log_message = (
+        f"{urgency} | "
+        f"Customer: {customer_id} | "
+        f"Category: {category} | "
+        f"Message: {message}"
+    )
+
+    logging.info(log_message)
+
+    return urgency
